@@ -4,6 +4,8 @@ import Login from '../components/Login.vue';
 import Register from '../components/Register.vue';
 import UploadDocument from '../components/UploadDocument.vue';
 import users from '../components/Admin.vue';
+import AdminDocument from '../components/AdminDocument.vue';
+import AdminCategories from '../components/AdminCategories.vue';
 
 // Mock authentication function (replace with your actual authentication check)
 const isAuthenticated = () => {
@@ -15,7 +17,9 @@ const routes = [
   { path: '/users', name: 'users', component: users },
   { path: '/login', name: 'login', component: Login },
   { path: '/register', component: Register },
-  { path: '/upload-document', name: 'UploadDocument', component: UploadDocument }
+  { path: '/upload-document', name: 'UploadDocument', component: UploadDocument },
+  { path: '/admin-document', name: 'AdminDocument', component: AdminDocument },
+  {path: '/admin-categories',component: AdminCategories,},
 ];
 
 const router = createRouter({

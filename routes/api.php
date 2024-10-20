@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDoc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
@@ -8,31 +9,22 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
 
 // Route::middleware('auth:sanctum')->group(function() {
-//     // Document Routes
-//     Route::get('/documents', [DocumentController::class, 'index']);
-//     Route::post('/documents', [DocumentController::class, 'store']);
-//     Route::get('/documents/{id}', [DocumentController::class, 'show']);
-//     Route::put('/documents/{id}', [DocumentController::class, 'update']);
-//     Route::delete('/documents/{id}', [DocumentController::class, 'destroy']);
+    // Document Routes
+    Route::get('/Admin-documents', [AdminDoc::class, 'index']);
+    Route::post('/Admin-documents', [AdminDoc::class, 'store']);
+    Route::get('/Admin-documents/{id}', [AdminDoc::class, 'show']);
+    Route::post('/Admin-documents/{id}', [AdminDoc::class, 'update']);
+    Route::delete('/Admin-documents/{id}', [AdminDoc::class, 'destroy']);
 
-//     // Category Routes
-//     Route::get('/categories', [CategorieController::class, 'index']);
-//     Route::post('/categories', [CategorieController::class, 'store']);
-//     Route::get('/categories/{id}', [CategorieController::class, 'show']);
-//     Route::put('/categories/{id}', [CategorieController::class, 'update']);
-//     Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);
-// });
+    // Category Routes
+    Route::get('/categories', [CategorieController::class, 'index']);
+    Route::post('/categories', [CategorieController::class, 'store']);
+    Route::get('/categories/{id}', [CategorieController::class, 'show']);
+    Route::put('/categories/{id}', [CategorieController::class, 'update']);
+    Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);
 
 Route::post('/document', [DocumentController::class, 'store']);
 Route::get('/categorie', [CategorieController::class, 'index']);
-
-// // Document routes
-// Route::get('/documents', [DocumentController::class, 'index']);
-// Route::get('/documents/{document}', [DocumentController::class, 'show']);
-// Route::put('/documents/{document}', [DocumentController::class, 'update']);
-// Route::post('/documents', [DocumentController::class, 'store']);
-// Route::delete('/documents/{id}', [DocumentController::class, 'destroy']);
-// Route::get('/documents/{document}/download', [DocumentController::class, 'download']); // Added a download route
 
 // Auth routes
 Route::post('/register', [AuthController::class, 'register']);
