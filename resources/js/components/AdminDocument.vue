@@ -50,8 +50,6 @@
       </div>
     </div>
 
-    <!-- Link to Category Management Page -->
-    <router-link to="/admin-categories">Manage Categories</router-link>
   </div>
 </template>
 
@@ -81,7 +79,11 @@ export default {
   },
   methods: {
     fetchDocuments() {
-      axios.get('/api/Admin-documents').then(response => {
+      axios.get('/api/Admin-documents', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      }).then(response => {
         this.documents = response.data;
       }).catch(error => {
         console.error('Error fetching documents:', error);
@@ -207,7 +209,9 @@ label {
   margin-bottom: 5px;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
@@ -228,7 +232,8 @@ button:hover {
   background-color: #45a049;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-size: 24px;
   margin-bottom: 15px;
 }

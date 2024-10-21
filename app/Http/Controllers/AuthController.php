@@ -30,7 +30,7 @@ class AuthController extends Controller
         ]);
 
         // Assign default role
-        $user->assignRole('admin');
+        $user->assignRole('user');
 
         // Generate a personal access token for the user
         $token = $user->createToken('authToken')->plainTextToken;
@@ -43,32 +43,37 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        // Validate login request
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+{
+    // Validate login request
+    $request->validate([
+        'email' => 'required|string|email',
+        'password' => 'required|string',
+    ]);
 
-        // Find user by email
-        $user = User::where('email', $request->email)->first();
+    // Find user by email
+    $user = User::where('email', $request->email)->first();
 
-        // Check if the password is correct
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        // Generate a personal access token
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        // Return user and token
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
+    // Check if the password is correct
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
         ]);
     }
+
+    // Generate a personal access token
+    $token = $user->createToken('authToken')->plainTextToken;
+
+    // Get user roles (assuming you have assigned roles with Spatie)
+    $roles = $user->getRoleNames(); // This returns a collection of roles
+
+    // Return user, token, and roles
+    return response()->json([
+        'user' => $user,
+        'roles' => $roles, // Return the roles as part of the response
+        'token' => $token,
+    ]);
+}
+
 
     public function logout(Request $request)
     {

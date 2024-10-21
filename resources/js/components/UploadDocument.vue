@@ -64,6 +64,7 @@ export default {
       axios.post('/api/document', formData, {
         headers: {
           'Contents-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .then(response => {

@@ -8,7 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
 
-// Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
     // Document Routes
     Route::get('/Admin-documents', [AdminDoc::class, 'index']);
     Route::post('/Admin-documents', [AdminDoc::class, 'store']);
@@ -23,19 +23,19 @@ use App\Http\Controllers\CategorieController;
     Route::put('/categories/{id}', [CategorieController::class, 'update']);
     Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);
 
-Route::post('/document', [DocumentController::class, 'store']);
-Route::get('/categorie', [CategorieController::class, 'index']);
+    Route::post('/document', [DocumentController::class, 'store']);
+    Route::get('/categorie', [CategorieController::class, 'index']);
+    // User management routes
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::delete('/users/{user}', [UserController::class, 'destroy']);
+    Route::get('/roles', [UserController::class, 'getRoles']);
+
+});
 
 // Auth routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-
-// User management routes
-Route::get('/users', [UserController::class, 'index']);
-Route::post('/users', [UserController::class, 'store']);
-Route::get('/users/{user}', [UserController::class, 'show']);
-Route::put('/users/{user}', [UserController::class, 'update']);
-Route::delete('/users/{user}', [UserController::class, 'destroy']);
-Route::get('/roles', [UserController::class, 'getRoles']);
-
