@@ -1,6 +1,10 @@
 <template>
   <div class="upload-container">
-    <h2>Upload Document</h2>
+    <div class="header">
+      <h2>Upload Document</h2>
+      <button @click="logout" class="logout-button">Logout</button> <!-- Added logout button -->
+    </div>
+
     <form @submit.prevent="uploadDocument" class="upload-form">
       <div class="form-group">
         <label for="title" class="label">Title:</label>
@@ -84,6 +88,10 @@ export default {
           console.error('Error fetching categories:', error);
         });
     },
+    logout() {
+      localStorage.removeItem('token'); // Remove the token from local storage
+      this.$router.push('/login'); // Redirect to login page
+    }
   },
   mounted() {
     // Fetch categories when the component is mounted
@@ -103,6 +111,26 @@ export default {
   border-radius: 8px;
   background-color: #f9f9f9;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logout-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
 }
 
 .upload-form {

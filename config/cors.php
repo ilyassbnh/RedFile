@@ -17,18 +17,20 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'],
+    'allowed_methods' => ['*'], // Allow all HTTP methods (GET, POST, etc.)
 
-    'allowed_origins' => ['*'],
+    // Replace '*' with the actual URL(s) of your frontend app(s)
+    // Example: 'http://localhost:3000' if your frontend is running locally
+    'allowed_origins' => ['http://localhost:8000'], 
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => ['*'], // Allow all headers
 
     'exposed_headers' => [],
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];

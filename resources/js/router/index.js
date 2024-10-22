@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../components/Home.vue';
 import Login from '../components/Login.vue';
 import Register from '../components/Register.vue';
 import UploadDocument from '../components/UploadDocument.vue';
@@ -26,8 +25,7 @@ const routes = [
     children: [
       { path: '/users', name: 'users', component: users },
       { path: '/admin-document', name: 'AdminDocument', component: AdminDocument },
-      { path: '/admin-categories', name: 'AdminCategories', component: AdminCategories },
-      { path: '/home', component: Home },
+      { path: '/admin-categories', name: 'AdminCategories', component: AdminCategories }
     ],
   },
 
@@ -38,8 +36,6 @@ const routes = [
   { path: '/login', name: 'login', component: Login },
   { path: '/register', component: Register },
 
-  // Default home route with authentication required
-  { path: '/home', name: 'home', component: Home, meta: { requiresAuth: true } },
 
   // Redirect all unknown routes to login
   { path: '/:pathMatch(.*)*', redirect: '/login' },
