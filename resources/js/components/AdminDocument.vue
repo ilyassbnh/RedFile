@@ -249,25 +249,35 @@ export default {
       this.filteredDocuments;
     },
     downloadDocument(doc) {
-      axios
-        .get(`/api/Admin-documents/download/${doc.id}`, {
-          responseType: 'blob',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
-        .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', `${doc.title}.pdf`); // Assuming PDF download
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch(error => {
-          console.error('Error downloading document:', error);
-        });
-    },
+  axios
+    .get(`/api/Admin-documents/download/${doc.id}`, {
+      responseType: 'blob', // Ensure you're requesting a blob
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then(response => {
+      // Check if response is correct
+      const contentType = response.headers['content-type'];
+      const blob = new Blob([response.data], { type: contentType }); // Use the content type from the response
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${doc.title}.pdf`); // Set a proper file name
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100); // Optional: remove link and revoke URL after some time
+    })
+    .catch(error => {
+      console.error('Error downloading document:', error);
+    });
+},
+
   },
   mounted() {
     this.fetchDocuments();

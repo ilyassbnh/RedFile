@@ -9,7 +9,7 @@
       <button @click="logout" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-200">Logout</button>
     </div>
 
-    <form @submit.prevent="uploadDocument" class="upload-form">
+    <form @submit.prevent="uploadDocument" class="upload-form mb-6">
       <div class="form-group mb-4">
         <label for="title" class="block text-gray-700 font-semibold mb-1">Title:</label>
         <input v-model="form.title" type="text" required class="border border-gray-300 rounded-md p-2 w-full" />
@@ -37,6 +37,20 @@
       <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 transition duration-200">Upload</button>
     </form>
 
+    <!-- List of User Documents -->
+    <div class="documents-list">
+      <h3 class="text-xl font-semibold mb-4">Your Documents</h3>
+      <ul>
+        <li v-for="document in documents" :key="document.id" class="document-item mb-4">
+          <div class="document-details p-4 bg-gray-100 rounded-md">
+            <h4 class="font-semibold">{{ document.title }}</h4>
+            <p>{{ document.content }}</p>
+            <button @click="deleteDocument(document.id)" class="text-red-600 mt-2">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
     <!-- Success message display -->
     <div v-if="successMessage" class="success-message mt-4 text-green-600 font-bold">
       {{ successMessage }}
@@ -57,7 +71,8 @@ export default {
         file: null,
       },
       categories: [],
-      successMessage: '', // Added state for success message
+      documents: [], // To store fetched user documents
+      successMessage: '', // For success messages
     };
   },
   methods: {
@@ -81,11 +96,10 @@ export default {
         },
       })
       .then(response => {
-        console.log(response.data);
-        this.successMessage = 'Document uploaded successfully!'; // Set success message
-        this.clearForm(); // Clear the form after successful upload
+        this.successMessage = 'Document uploaded successfully!';
+        this.fetchUserDocuments(); // Fetch documents again after uploading
+        this.clearForm();
 
-        // Optionally, you could hide the success message after a few seconds
         setTimeout(() => {
           this.successMessage = '';
         }, 3000);
@@ -95,13 +109,42 @@ export default {
       });
     },
     fetchCategories() {
-      axios.get('/api/categorie')
-        .then(response => {
-          this.categories = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching categories:', error);
-        });
+      axios.get('/api/categorie', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      })
+      .then(response => {
+        this.categories = response.data;
+      })
+      .catch(error => {
+        console.error('Error fetching categories:', error);
+      });
+    },
+    fetchUserDocuments() {
+      axios.get('/api/user/documents', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      })
+      .then(response => {
+        this.documents = response.data;
+      })
+      .catch(error => {
+        console.error('Error fetching documents:', error);
+      });
+    },
+    deleteDocument(id) {
+      axios.delete(`/api/document/${id}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      })
+      .then(response => {
+        this.successMessage = 'Document deleted successfully!';
+        this.fetchUserDocuments(); // Fetch documents again after deletion
+
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
+      })
+      .catch(error => {
+        console.error('Error deleting document:', error);
+      });
     },
     logout() {
       localStorage.removeItem('token'); // Remove the token from local storage
@@ -118,6 +161,7 @@ export default {
   },
   mounted() {
     this.fetchCategories();
+    this.fetchUserDocuments();
   }
 };
 </script>

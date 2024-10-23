@@ -28,6 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/categories/{id}', [CategorieController::class, 'update']);
     Route::delete('/categories/{id}', [CategorieController::class, 'destroy']);
 
+    // User documents
+    Route::get('/user/documents', [DocumentController::class, 'getUserDocuments']);
+    Route::delete('/document/{id}', [DocumentController::class, 'deleteDocument']);
+
     Route::post('/document', [DocumentController::class, 'store']);
     Route::get('/categorie', [CategorieController::class, 'index']);
     // User management routes

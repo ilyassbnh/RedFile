@@ -1,5 +1,5 @@
 <template>
-    <head>
+  <head>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   </head>
@@ -52,44 +52,37 @@
     </div>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
+      name: '', // Define name
       email: '', // Define email
       password: '', // Define password
+      password_confirmation: '', // Define password confirmation
       errorMessage: '', // Define errorMessage
     };
   },
   methods: {
-    async handleLogin() {
+    async handleRegister() {
       try {
         this.errorMessage = ''; // Clear previous errors
-        const response = await axios.post('/api/login', {
+        const response = await axios.post('/api/register', {
+          name: this.name,
           email: this.email,
           password: this.password,
+          password_confirmation: this.password_confirmation,
         });
 
-        // Store the token and role in localStorage
-        localStorage.setItem('token', response.data.token);
-
-        // Assuming there's only one role for simplicity, you can use response.data.roles[0]
-        localStorage.setItem('role', response.data.roles[0]); // Store the first role if multiple exist
-
-        // Redirect based on the user role
-        const userRole = response.data.roles[0];
-        if (userRole === 'admin') {
-          this.$router.push('/admin');
-        } else {
-          this.$router.push('/upload-document');
-        }
+        // Handle successful registration (e.g., redirect to login)
+        this.$router.push('/login'); // Redirect to login after registration
       } catch (error) {
-        this.errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+        this.errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
       }
     },
   },
 };
 </script>
-

@@ -37,18 +37,24 @@ class DocumentController extends Controller
         return response()->json($document, 201);
     }
 
-    public function destroy($id)
+    public function deleteDocument($id)
     {
-        $document = Document::findOrFail($id);
-
+        $document = Document::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+    
         // Delete the file if it exists
         if ($document->file) {
             Storage::delete($document->file);
         }
-
+    
         // Delete the document record from the database
         $document->delete();
-
+    
         return response()->json(['message' => 'Document deleted successfully'], 200);
+    }
+    public function getUserDocuments()
+    {
+        $documents = Document::where('user_id', auth()->id())->get();
+
+        return response()->json($documents);
     }
 }
