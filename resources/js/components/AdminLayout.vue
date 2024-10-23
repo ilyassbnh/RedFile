@@ -1,25 +1,35 @@
 <template>
   <div class="admin-layout">
+    <!-- Sidebar Background for Backdrop Effect -->
+    <div v-if="isSidebarOpen" class="sidebar-backdrop" @click="toggleSidebar"></div>
+
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside :class="{ 'sidebar': true, 'open': isSidebarOpen }">
       <h2>Admin Dashboard</h2>
       <nav>
         <ul>
           <li>
-            <router-link to="/admin-document">Documents</router-link>
+            <router-link to="/admin-document" @click="toggleSidebar">Documents</router-link>
           </li>
           <li>
-            <router-link to="/admin-categories">Categories</router-link>
+            <router-link to="/admin-categories" @click="toggleSidebar">Categories</router-link>
           </li>
           <li>
-            <router-link to="/users">Users</router-link>
+            <router-link to="/users" @click="toggleSidebar">Users</router-link>
           </li>
           <li>
-            <a href="#" @click.prevent="logout" class="logout-link">Logout</a> <!-- Logout Link -->
+            <a href="#" @click.prevent="logout" class="logout-link">Logout</a>
           </li>
         </ul>
       </nav>
     </aside>
+
+    <!-- Toggle Button for Sidebar -->
+    <button class="toggle-button" @click="toggleSidebar">
+      <span class="toggle-icon"></span>
+      <span class="toggle-icon"></span>
+      <span class="toggle-icon"></span>
+    </button>
 
     <!-- Main content area -->
     <div class="content">
@@ -35,6 +45,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      isSidebarOpen: false,
+    };
+  },
   computed: {
     pageTitle() {
       const routeName = this.$route.name;
@@ -48,14 +63,17 @@ export default {
         default:
           return 'Admin Dashboard';
       }
-    }
+    },
   },
   methods: {
+    toggleSidebar() {
+      this.isSidebarOpen = !this.isSidebarOpen;
+    },
     logout() {
       localStorage.removeItem('token'); // Remove the token from local storage
       this.$router.push('/login'); // Redirect to login page
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -63,13 +81,35 @@ export default {
 .admin-layout {
   display: flex;
   height: 100vh;
+  position: relative;
 }
 
 .sidebar {
   width: 250px;
-  background-color: #2c3e50;
+  background-color: #2c3e50; /* Sidebar background color */
   color: white;
-  padding: 20px;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: -250px; /* Hidden off-screen */
+  transition: left 0.3s ease; /* Smooth slide effect */
+  z-index: 1000;
+  height: 100%; /* Make sidebar full height */
+  font-family: 'Roboto', sans-serif; /* Consistent font */
+}
+
+.sidebar.open {
+  left: 0; /* Slide in when open */
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent backdrop */
+  z-index: 900; /* Behind the sidebar */
 }
 
 .sidebar h2 {
@@ -92,14 +132,14 @@ export default {
 }
 
 .logout-link {
-  color: #e74c3c; /* Optional: Change color for logout link */
+  color: #e74c3c;
   font-weight: bold;
 }
 
 .content {
   flex-grow: 1;
   padding: 20px;
-  background-color: #ecf0f1;
+  transition: margin-left 0.3s ease; /* Smooth transition for content */
 }
 
 header {
@@ -108,6 +148,28 @@ header {
 
 header h1 {
   font-size: 2em;
-  color: #34495e;
+  color: #34495e; /* Consistent color for the page title */
+  font-family: 'Roboto', sans-serif; /* Consistent font for header */
+}
+
+.toggle-button {
+  position: absolute;
+  top: 20px;
+  right: 20px; /* Position the button to the top right */
+  background-color: #2c3e50; /* Match sidebar color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1001; /* Above the sidebar and backdrop */
+}
+
+.toggle-icon {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: white;
+  margin: 4px 0;
 }
 </style>

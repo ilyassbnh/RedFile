@@ -27,11 +27,16 @@
 
       <div class="form-group">
         <label for="file" class="label">Document File:</label>
-        <input type="file" @change="handleFileUpload" class="input-field" />
+        <input type="file" @change="handleFileUpload" class="input-field" ref="fileInput" />
       </div>
 
       <button type="submit" class="upload-button">Upload</button>
     </form>
+
+    <!-- Success message display -->
+    <div v-if="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
   </div>
 </template>
 
@@ -43,11 +48,12 @@ export default {
     return {
       form: {
         title: '',
-        contents: '', // Ensure the key is 'contents' to match the backend
+        contents: '',
         category_id: '',
-        file: null, // File object
+        file: null,
       },
-      categories: [], // Array to store categories from the API
+      categories: [],
+      successMessage: '', // Added state for success message
     };
   },
   methods: {
@@ -57,23 +63,28 @@ export default {
     uploadDocument() {
       const formData = new FormData();
       formData.append('title', this.form.title);
-      formData.append('contents', this.form.contents); // Match 'contents' with the backend
+      formData.append('contents', this.form.contents);
       formData.append('category_id', this.form.category_id);
 
       if (this.form.file) {
-        formData.append('file', this.form.file); // Append the file if it exists
+        formData.append('file', this.form.file);
       }
 
-      // Send the request
       axios.post('/api/document', formData, {
         headers: {
-          'Contents-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .then(response => {
         console.log(response.data);
-        // Handle successful upload
+        this.successMessage = 'Document uploaded successfully!'; // Set success message
+        this.clearForm(); // Clear the form after successful upload
+
+        // Optionally, you could hide the success message after a few seconds
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
       })
       .catch(error => {
         console.error('Error uploading document:', error);
@@ -82,7 +93,7 @@ export default {
     fetchCategories() {
       axios.get('/api/categorie')
         .then(response => {
-          this.categories = response.data; // Assign the fetched categories to the array
+          this.categories = response.data;
         })
         .catch(error => {
           console.error('Error fetching categories:', error);
@@ -91,10 +102,18 @@ export default {
     logout() {
       localStorage.removeItem('token'); // Remove the token from local storage
       this.$router.push('/login'); // Redirect to login page
+    },
+    clearForm() {
+      this.form = {
+        title: '',
+        contents: '',
+        category_id: '',
+        file: null,
+      };
+      this.$refs.fileInput.value = ''; // Clear the file input field
     }
   },
   mounted() {
-    // Fetch categories when the component is mounted
     this.fetchCategories();
   }
 };
@@ -166,6 +185,12 @@ export default {
 
 .upload-button:hover {
   background-color: #0056b3;
+}
+
+.success-message {
+  margin-top: 15px;
+  color: green; /* Style for success message */
+  font-weight: bold;
 }
 
 .error {

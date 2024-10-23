@@ -150,6 +150,32 @@ export default {
 .admin-categories {
   font-family: 'Roboto', sans-serif;
   padding: 20px;
+  max-width: 800px; /* Set a max width for better layout */
+  margin: 0 auto; /* Center the container */
+  background-color: #f8f9fa; /* Light background for the page */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+}
+
+h1,
+h2 {
+  color: #34495e; /* Darker color for headings */
+  margin-bottom: 15px;
+  text-align: center; /* Center align headings */
+}
+
+button {
+  background-color: #007bff; /* Bootstrap primary color */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px 0; /* Add margin for vertical spacing */
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker shade for hover effect */
 }
 
 .form-group {
@@ -160,32 +186,15 @@ label {
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
+  color: #2c3e50; /* Darker text for labels */
 }
 
 input {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
+  padding: 10px;
+  border: 1px solid #ced4da; /* Light border color */
   border-radius: 4px;
-}
-
-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-h1, h2 {
-  font-size: 24px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 ul {
@@ -194,10 +203,19 @@ ul {
 }
 
 ul li {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ced4da; /* Light border for list items */
+  border-radius: 4px; /* Rounded corners */
+  display: flex; /* Use flex for item layout */
+  justify-content: space-between; /* Space out title and buttons */
+  align-items: center; /* Center align vertically */
 }
 
-/* Modal styles */
+ul li button {
+  margin-left: 10px; /* Add a gap between the buttons */
+}
+
 .modal {
   position: fixed;
   top: 0;
@@ -215,5 +233,16 @@ ul li {
   padding: 20px;
   border-radius: 5px;
   width: 400px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for modal */
+}
+
+@media (max-width: 768px) {
+  .admin-categories {
+    padding: 10px;
+  }
+
+  button {
+    width: 100%; /* Full width buttons on small screens */
+  }
 }
 </style>
