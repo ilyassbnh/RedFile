@@ -1,40 +1,44 @@
 <template>
-  <div class="upload-container">
-    <div class="header">
-      <h2>Upload Document</h2>
-      <button @click="logout" class="logout-button">Logout</button> <!-- Added logout button -->
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  </head>
+  <div class="upload-container p-6 max-w-2xl mx-auto bg-white rounded-lg shadow-lg">
+    <div class="header flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-semibold text-gray-800">Upload Document</h2>
+      <button @click="logout" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-200">Logout</button>
     </div>
 
     <form @submit.prevent="uploadDocument" class="upload-form">
-      <div class="form-group">
-        <label for="title" class="label">Title:</label>
-        <input v-model="form.title" type="text" required class="input-field" />
+      <div class="form-group mb-4">
+        <label for="title" class="block text-gray-700 font-semibold mb-1">Title:</label>
+        <input v-model="form.title" type="text" required class="border border-gray-300 rounded-md p-2 w-full" />
       </div>
 
-      <div class="form-group">
-        <label for="contents" class="label">Contents:</label>
-        <textarea v-model="form.contents" required class="input-field"></textarea>
+      <div class="form-group mb-4">
+        <label for="contents" class="block text-gray-700 font-semibold mb-1">Contents:</label>
+        <textarea v-model="form.contents" required class="border border-gray-300 rounded-md p-2 w-full"></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="category" class="label">Category:</label>
-        <select v-model="form.category_id" required class="input-field">
+      <div class="form-group mb-4">
+        <label for="category" class="block text-gray-700 font-semibold mb-1">Category:</label>
+        <select v-model="form.category_id" required class="border border-gray-300 rounded-md p-2 w-full">
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.name }}
           </option>
         </select>
       </div>
 
-      <div class="form-group">
-        <label for="file" class="label">Document File:</label>
-        <input type="file" @change="handleFileUpload" class="input-field" ref="fileInput" />
+      <div class="form-group mb-4">
+        <label for="file" class="block text-gray-700 font-semibold mb-1">Document File:</label>
+        <input type="file" @change="handleFileUpload" class="border border-gray-300 rounded-md p-2 w-full" />
       </div>
 
-      <button type="submit" class="upload-button">Upload</button>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 transition duration-200">Upload</button>
     </form>
 
     <!-- Success message display -->
-    <div v-if="successMessage" class="success-message">
+    <div v-if="successMessage" class="success-message mt-4 text-green-600 font-bold">
       {{ successMessage }}
     </div>
   </div>
@@ -110,7 +114,6 @@ export default {
         category_id: '',
         file: null,
       };
-      this.$refs.fileInput.value = ''; // Clear the file input field
     }
   },
   mounted() {
@@ -120,81 +123,8 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-
 .upload-container {
-  font-family: 'Roboto', sans-serif;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  font-family: 'Inter', sans-serif;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.logout-button {
-  background-color: #dc3545;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.logout-button:hover {
-  background-color: #c82333;
-}
-
-.upload-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.label {
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.input-field {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
-}
-
-.upload-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.upload-button:hover {
-  background-color: #0056b3;
-}
-
-.success-message {
-  margin-top: 15px;
-  color: green; /* Style for success message */
-  font-weight: bold;
-}
-
-.error {
-  color: red;
-  margin-top: 10px;
 }
 </style>
