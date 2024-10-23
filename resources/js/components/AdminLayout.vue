@@ -1,9 +1,7 @@
 <template>
   <div class="admin-layout">
-    <!-- Sidebar Background for Backdrop Effect -->
     <div v-if="isSidebarOpen" class="sidebar-backdrop" @click="toggleSidebar"></div>
 
-    <!-- Sidebar -->
     <aside :class="{ 'sidebar': true, 'open': isSidebarOpen }">
       <h2>Admin Dashboard</h2>
       <nav>
@@ -24,7 +22,6 @@
       </nav>
     </aside>
 
-    <!-- Toggle Button for Sidebar -->
     <button class="toggle-button" @click="toggleSidebar">
       <span class="toggle-icon"></span>
       <span class="toggle-icon"></span>
@@ -70,8 +67,8 @@ export default {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
     logout() {
-      localStorage.removeItem('token'); // Remove the token from local storage
-      this.$router.push('/login'); // Redirect to login page
+      localStorage.removeItem('token'); 
+      this.$router.push('/login'); 
     },
   },
 };
@@ -86,20 +83,20 @@ export default {
 
 .sidebar {
   width: 250px;
-  background-color: #2c3e50; /* Sidebar background color */
+  background-color: #2c3e50; 
   color: white;
   padding: 10px;
   position: fixed;
   top: 0;
-  left: -250px; /* Hidden off-screen */
-  transition: left 0.3s ease; /* Smooth slide effect */
+  left: -250px;
+  transition: left 0.3s ease; 
   z-index: 1000;
-  height: 100%; /* Make sidebar full height */
-  font-family: 'Roboto', sans-serif; /* Consistent font */
+  height: 100%; 
+  font-family: 'Roboto', sans-serif; 
 }
 
 .sidebar.open {
-  left: 0; /* Slide in when open */
+  left: 0; 
 }
 
 .sidebar-backdrop {
@@ -108,8 +105,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent backdrop */
-  z-index: 900; /* Behind the sidebar */
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 900; 
 }
 
 .sidebar h2 {
@@ -139,7 +136,7 @@ export default {
 .content {
   flex-grow: 1;
   padding: 20px;
-  transition: margin-left 0.3s ease; /* Smooth transition for content */
+  transition: margin-left 0.3s ease; 
 }
 
 header {
@@ -148,21 +145,21 @@ header {
 
 header h1 {
   font-size: 2em;
-  color: #34495e; /* Consistent color for the page title */
-  font-family: 'Roboto', sans-serif; /* Consistent font for header */
+  color: #34495e; 
+  font-family: 'Roboto', sans-serif; 
 }
 
 .toggle-button {
   position: absolute;
   top: 20px;
-  right: 20px; /* Position the button to the top right */
-  background-color: #2c3e50; /* Match sidebar color */
+  right: 20px; 
+  background-color: #2c3e50; 
   color: white;
   border: none;
   border-radius: 4px;
   padding: 10px;
   cursor: pointer;
-  z-index: 1001; /* Above the sidebar and backdrop */
+  z-index: 1001; 
 }
 
 .toggle-icon {

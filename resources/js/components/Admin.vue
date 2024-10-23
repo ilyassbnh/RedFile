@@ -2,7 +2,6 @@
   <div class="admin-panel">
     <h1>Admin Panel - User Management</h1>
 
-    <!-- Add User Form -->
     <form @submit.prevent="handleSubmit">
       <div>
         <label>Name:</label>
@@ -12,7 +11,7 @@
         <label>Email:</label>
         <input v-model="form.email" type="email" required />
       </div>
-      <div v-if="!isEditing"> <!-- Only show password fields when adding a new user -->
+      <div v-if="!isEditing"> 
         <label>Password:</label>
         <input v-model="form.password" type="password" required />
       </div>
@@ -29,7 +28,6 @@
       <button type="submit">{{ isEditing ? 'Update User' : 'Add User' }}</button>
     </form>
 
-    <!-- User List -->
     <table>
       <thead>
         <tr>
@@ -61,7 +59,7 @@ export default {
   data() {
     return {
       users: [],
-      roles: [], // Dynamically fetched roles
+      roles: [], 
       form: {
         name: '',
         email: '',
@@ -74,7 +72,6 @@ export default {
     };
   },
   methods: {
-    // Fetch all users
     fetchUsers() {
       axios.get('/api/users')
         .then(response => {
@@ -82,7 +79,6 @@ export default {
         });
     },
 
-    // Fetch all roles
     fetchRoles() {
       axios.get('/api/roles')
         .then(response => {
@@ -90,7 +86,6 @@ export default {
         });
     },
 
-    // Handle form submission for both adding and updating
     handleSubmit() {
       if (this.isEditing) {
         this.updateUser();
@@ -99,7 +94,6 @@ export default {
       }
     },
 
-    // Add a new user
     addUser() {
       axios.post('/api/users', this.form)
         .then(response => {
@@ -113,19 +107,16 @@ export default {
         });
     },
     
-    // Edit user (populate the form)
     editUser(user) {
       this.isEditing = true;
       this.editingUserId = user.id;
       this.form.name = user.name;
       this.form.email = user.email;
       this.form.role = user.roles[0].name;
-      // Clear password fields when editing
       this.form.password = '';
       this.form.password_confirmation = '';
     },
 
-    // Update user
     updateUser() {
       axios.put(`/api/users/${this.editingUserId}`, this.form)
         .then(response => {
@@ -137,7 +128,6 @@ export default {
         });
     },
 
-    // Delete user
     deleteUser(id) {
       axios.delete(`/api/users/${id}`)
         .then(response => {
@@ -148,7 +138,6 @@ export default {
         });
     },
 
-    // Reset form fields
     resetForm() {
       this.form = {
         name: '',
@@ -162,8 +151,8 @@ export default {
     }
   },
   mounted() {
-    this.fetchUsers(); // Fetch users when the component is mounted
-    this.fetchRoles(); // Fetch roles when the component is mounted
+    this.fetchUsers(); 
+    this.fetchRoles(); 
   }
 };
 </script>
@@ -173,21 +162,21 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  font-family: 'Roboto', sans-serif; /* Consistent font */
-  background-color: #f8f9fa; /* Light background */
+  font-family: 'Roboto', sans-serif; 
+  background-color: #f8f9fa; 
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
-  color: #34495e; /* Darker color for the title */
+  color: #34495e; 
 }
 
 form {
   margin-bottom: 20px;
   padding: 20px;
-  background-color: #ffffff; /* White background for the form */
+  background-color: #ffffff; 
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -200,7 +189,7 @@ label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #2c3e50; /* Darker text for labels */
+  color: #2c3e50; 
 }
 
 input[type="text"],
@@ -209,23 +198,23 @@ input[type="password"],
 select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ced4da; /* Border color */
+  border: 1px solid #ced4da; 
   border-radius: 4px;
-  font-size: 16px; /* Consistent font size */
+  font-size: 16px; 
 }
 
 button {
-  background-color: #007bff; /* Bootstrap primary color */
+  background-color: #007bff; 
   color: white;
   padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px; /* Consistent font size */
+  font-size: 16px; 
 }
 
 button:hover {
-  background-color: #0056b3; /* Darker shade for hover effect */
+  background-color: #0056b3; 
 }
 
 table {
@@ -236,23 +225,22 @@ table {
 
 table th,
 table td {
-  border: 1px solid #dee2e6; /* Border color for table */
+  border: 1px solid #dee2e6; 
   padding: 10px;
   text-align: left;
 }
 
 table th {
-  background-color: #f1f1f1; /* Light gray background for header */
+  background-color: #f1f1f1; 
   font-weight: bold;
 }
 
 table tbody tr:hover {
-  background-color: #f8f9fa; /* Hover effect for table rows */
+  background-color: #f8f9fa; 
 }
 
-/* Add margin between the edit and delete buttons */
 table td button {
-  margin-right: 10px; /* Adjust the margin as needed for spacing */
+  margin-right: 10px; 
 }
 
 @media (max-width: 768px) {
@@ -261,11 +249,11 @@ table td button {
   }
 
   button {
-    width: 100%; /* Full width buttons on small screens */
+    width: 100%; 
   }
 
   table {
-    font-size: 14px; /* Smaller font size for table on small screens */
+    font-size: 14px; 
   }
 }
 </style>

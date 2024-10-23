@@ -2,10 +2,8 @@
   <div class="admin-categories">
     <h1>Admin - Category Management</h1>
 
-    <!-- Button to add a new category -->
     <button @click="openAddCategoryModal">Add New Category</button>
 
-    <!-- Category List -->
     <div v-if="categories.length">
       <h2>Category List</h2>
       <ul>
@@ -17,7 +15,6 @@
       </ul>
     </div>
 
-    <!-- Add Category Modal -->
     <div v-if="showAddCategoryModal" class="modal">
       <div class="modal-content">
         <h2>Add New Category</h2>
@@ -60,7 +57,7 @@ export default {
       showEditCategoryModal: false,
       editCategoryForm: {
         name: '',
-        id: null, // Store the ID for editing
+        id: null, 
       },
       addCategoryForm: {
         name: '',
@@ -68,7 +65,6 @@ export default {
     };
   },
   methods: {
-    // Fetch all categories
     fetchCategories() {
       axios.get('/api/categories')
         .then(response => {
@@ -79,31 +75,26 @@ export default {
         });
     },
 
-    // Open the modal to add a new category
     openAddCategoryModal() {
       this.showAddCategoryModal = true;
-      this.addCategoryForm = { name: '' }; // Reset form
+      this.addCategoryForm = { name: '' }; 
     },
 
-    // Open the modal to edit an existing category
     openEditCategoryModal(category) {
       this.showEditCategoryModal = true;
-      this.editCategoryForm = { ...category }; // Pre-fill the form with the selected category
+      this.editCategoryForm = { ...category }; 
     },
 
-    // Close the add category modal
     closeAddCategoryModal() {
       this.showAddCategoryModal = false;
-      this.addCategoryForm = { name: '' }; // Reset form on close
+      this.addCategoryForm = { name: '' }; 
     },
 
-    // Close the edit category modal
     closeEditCategoryModal() {
       this.showEditCategoryModal = false;
-      this.editCategoryForm = { name: '', id: null }; // Reset form on close
+      this.editCategoryForm = { name: '', id: null }; 
     },
 
-    // Handle adding a new category
     handleAddCategory() {
       axios.post('/api/categories', this.addCategoryForm)
         .then(() => {
@@ -115,7 +106,6 @@ export default {
         });
     },
 
-    // Handle editing an existing category
     handleEditCategory() {
       axios.put(`/api/categories/${this.editCategoryForm.id}`, { name: this.editCategoryForm.name })
         .then(() => {
@@ -127,7 +117,6 @@ export default {
         });
     },
 
-    // Delete a category
     handleDeleteCategory(id) {
       if (confirm('Are you sure you want to delete this category?')) {
         axios.delete(`/api/categories/${id}`)
@@ -150,32 +139,32 @@ export default {
 .admin-categories {
   font-family: 'Roboto', sans-serif;
   padding: 20px;
-  max-width: 800px; /* Set a max width for better layout */
-  margin: 0 auto; /* Center the container */
-  background-color: #f8f9fa; /* Light background for the page */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  max-width: 800px; 
+  margin: 0 auto; 
+  background-color: #f8f9fa; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1,
 h2 {
-  color: #34495e; /* Darker color for headings */
+  color: #34495e; 
   margin-bottom: 15px;
-  text-align: center; /* Center align headings */
+  text-align: center; 
 }
 
 button {
-  background-color: #007bff; /* Bootstrap primary color */
+  background-color: #007bff; 
   color: white;
   padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin: 5px 0; /* Add margin for vertical spacing */
+  margin: 5px 0; 
 }
 
 button:hover {
-  background-color: #0056b3; /* Darker shade for hover effect */
+  background-color: #0056b3; 
 }
 
 .form-group {
@@ -186,13 +175,13 @@ label {
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
-  color: #2c3e50; /* Darker text for labels */
+  color: #2c3e50; 
 }
 
 input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ced4da; /* Light border color */
+  border: 1px solid #ced4da; 
   border-radius: 4px;
   margin-bottom: 10px;
 }
@@ -205,15 +194,15 @@ ul {
 ul li {
   margin-bottom: 15px;
   padding: 10px;
-  border: 1px solid #ced4da; /* Light border for list items */
-  border-radius: 4px; /* Rounded corners */
-  display: flex; /* Use flex for item layout */
-  justify-content: space-between; /* Space out title and buttons */
-  align-items: center; /* Center align vertically */
+  border: 1px solid #ced4da; 
+  border-radius: 4px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
 }
 
 ul li button {
-  margin-left: 10px; /* Add a gap between the buttons */
+  margin-left: 10px; 
 }
 
 .modal {
@@ -233,7 +222,7 @@ ul li button {
   padding: 20px;
   border-radius: 5px;
   width: 400px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for modal */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
 }
 
 @media (max-width: 768px) {
@@ -242,7 +231,7 @@ ul li button {
   }
 
   button {
-    width: 100%; /* Full width buttons on small screens */
+    width: 100%;
   }
 }
 </style>

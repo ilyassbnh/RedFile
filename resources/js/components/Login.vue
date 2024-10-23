@@ -46,11 +46,11 @@ export default {
         localStorage.setItem('role', response.data.roles[0]); // Store the first role if multiple exist
 
         // Redirect based on the user role
-        const userRole = response.data.roles[0]; // Check the first role
+        const userRole = response.data.roles[0]; 
         if (userRole === 'admin') {
-          this.$router.push('/admin'); // Redirect admin to the admin layout
+          this.$router.push('/admin');
         } else {
-          this.$router.push('/upload-document'); // Redirect users to the document upload page
+          this.$router.push('/upload-document'); 
         }
       } catch (error) {
         this.errorMessage = error.response?.data?.message || 'Login failed. Please try again.';

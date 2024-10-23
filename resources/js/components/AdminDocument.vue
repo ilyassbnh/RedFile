@@ -2,19 +2,31 @@
   <div class="admin-documents">
     <h1>Admin - Document Management</h1>
 
-    <!-- Button to add a new document -->
-    <button @click="openDocumentModal()">Add New Document</button>
+    <div class="document-actions">
+      <!-- Search -->
+      <input v-model="searchQuery" type="text" placeholder="Search documents..." @input="searchDocuments" />
+
+      <!-- Sort by -->
+      <select v-model="sortOption" @change="sortDocuments">
+        <option value="title">Sort by Title</option>
+        <option value="category">Sort by Category</option>
+      </select>
+
+      <button @click="openDocumentModal()">Add New Document</button>
+    </div>
 
     <!-- Document List -->
-    <div v-if="documents.length">
+    <div v-if="filteredDocuments.length">
       <h2>Document List</h2>
       <ul>
-        <li v-for="document in documents" :key="document.id">
-          <strong>{{ document.title }}</strong> - {{ document.content }}
-          <br>
-          <em>Category: {{ getCategoryName(document.category_id) }}</em>
-          <button @click="openDocumentModal(document)">Edit</button>
-          <button @click="handleDeleteDocument(document.id)">Delete</button>
+        <li v-for="doc in filteredDocuments" :key="doc.id">
+          <strong>{{ doc.title }}</strong> - {{ doc.content }}
+          <br />
+          <em>Category: {{ getCategoryName(doc.category_id) }}</em>
+          <br />
+          <button @click="openDocumentModal(doc)">Edit</button>
+          <button @click="handleDeleteDocument(doc.id)">Delete</button>
+          <button @click="downloadDocument(doc)">Download</button>
         </li>
       </ul>
     </div>
@@ -49,9 +61,9 @@
         </form>
       </div>
     </div>
-
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -61,40 +73,63 @@ export default {
     return {
       documents: [],
       categories: [],
+      searchQuery: '', // For search functionality
+      sortOption: 'title', // For sorting functionality
       showDocumentModal: false,
-      showCategoryModal: false,
       documentForm: {
         title: '',
         content: '',
         category_id: '',
         file: null,
       },
-      categoryForm: {
-        name: '',
-      },
       editingDocument: null,
-      editingCategory: null,
       selectedFile: null,
     };
   },
+  computed: {
+    filteredDocuments() {
+      // Filter documents based on search query
+      let filtered = this.documents.filter(doc =>
+        doc.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+
+      // Sort documents based on the selected option
+      if (this.sortOption === 'title') {
+        return filtered.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (this.sortOption === 'category') {
+        return filtered.sort((a, b) => {
+          const categoryA = this.getCategoryName(a.category_id);
+          const categoryB = this.getCategoryName(b.category_id);
+          return categoryA.localeCompare(categoryB);
+        });
+      }
+      return filtered;
+    },
+  },
   methods: {
     fetchDocuments() {
-      axios.get('/api/Admin-documents', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      }).then(response => {
-        this.documents = response.data;
-      }).catch(error => {
-        console.error('Error fetching documents:', error);
-      });
+      axios
+        .get('/api/Admin-documents', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+        .then(response => {
+          this.documents = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching documents:', error);
+        });
     },
     fetchCategories() {
-      axios.get('/api/categories').then(response => {
-        this.categories = response.data;
-      }).catch(error => {
-        console.error('Error fetching categories:', error);
-      });
+      axios
+        .get('/api/categories')
+        .then(response => {
+          this.categories = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
     },
     getCategoryName(id) {
       const category = this.categories.find(cat => cat.id === id);
@@ -129,61 +164,64 @@ export default {
       }
 
       if (this.editingDocument) {
-        axios.post(`/api/Admin-documents/${this.editingDocument.id}`, formData).then(() => {
-          this.fetchDocuments();
-          this.closeDocumentModal();
-        }).catch(error => {
-          console.error('Error updating document:', error);
-        });
+        axios
+          .post(`/api/Admin-documents/${this.editingDocument.id}`, formData)
+          .then(() => {
+            this.fetchDocuments();
+            this.closeDocumentModal();
+          })
+          .catch(error => {
+            console.error('Error updating document:', error);
+          });
       } else {
-        axios.post('/api/Admin-documents', formData).then(() => {
-          this.fetchDocuments();
-          this.closeDocumentModal();
-        }).catch(error => {
-          console.error('Error adding document:', error);
-        });
+        axios
+          .post('/api/Admin-documents', formData)
+          .then(() => {
+            this.fetchDocuments();
+            this.closeDocumentModal();
+          })
+          .catch(error => {
+            console.error('Error adding document:', error);
+          });
       }
     },
     handleDeleteDocument(id) {
       if (confirm('Are you sure you want to delete this document?')) {
-        axios.delete(`/api/Admin-documents/${id}`).then(() => {
-          this.fetchDocuments();
-        }).catch(error => {
-          console.error('Error deleting document:', error);
-        });
+        axios
+          .delete(`/api/Admin-documents/${id}`)
+          .then(() => {
+            this.fetchDocuments();
+          })
+          .catch(error => {
+            console.error('Error deleting document:', error);
+          });
       }
     },
-    openCategoryModal(category = null) {
-      if (category) {
-        this.editingCategory = { ...category };
-        this.categoryForm = { ...category };
-      } else {
-        this.editingCategory = null;
-        this.categoryForm = { name: '' };
-      }
-      this.showCategoryModal = true;
+    searchDocuments() {
+      this.filteredDocuments;
     },
-    closeCategoryModal() {
-      this.showCategoryModal = false;
-      this.editingCategory = null;
-      this.categoryForm = { name: '' };
+    sortDocuments() {
+      this.filteredDocuments;
     },
-    handleSaveCategory() {
-      if (this.editingCategory) {
-        axios.put(`/api/categories/${this.editingCategory.id}`, this.categoryForm).then(() => {
-          this.fetchCategories();
-          this.closeCategoryModal();
-        }).catch(error => {
-          console.error('Error updating category:', error);
+    downloadDocument(doc) {
+      axios
+        .get(`/api/Admin-documents/download/${doc.id}`, {
+          responseType: 'blob',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `${doc.title}.pdf`); // Assuming PDF download
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(error => {
+          console.error('Error downloading document:', error);
         });
-      } else {
-        axios.post('/api/categories', this.categoryForm).then(() => {
-          this.fetchCategories();
-          this.closeCategoryModal();
-        }).catch(error => {
-          console.error('Error adding category:', error);
-        });
-      }
     },
   },
   mounted() {
@@ -191,38 +229,39 @@ export default {
     this.fetchCategories();
   },
 };
+
 </script>
 
 <style scoped>
 .admin-documents {
   font-family: 'Roboto', sans-serif;
   padding: 20px;
-  max-width: 800px; /* Set a max width for better layout */
-  margin: 0 auto; /* Center the container */
-  background-color: #f8f9fa; /* Light background for the page */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1,
 h2 {
-  color: #34495e; /* Darker color for headings */
+  color: #34495e;
   margin-bottom: 15px;
-  text-align: center; /* Center align headings */
+  text-align: center;
 }
 
 button {
-  background-color: #007bff; /* Bootstrap primary color */
+  background-color: #007bff;
   color: white;
   padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin: 5px 0; /* Add margin for vertical spacing */
+  margin: 5px 0;
 }
 
 button:hover {
-  background-color: #0056b3; /* Darker shade for hover effect */
+  background-color: #0056b3;
 }
 
 .form-group {
@@ -233,7 +272,7 @@ label {
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
-  color: #2c3e50; /* Darker text for labels */
+  color: #2c3e50;
 }
 
 input,
@@ -241,7 +280,7 @@ textarea,
 select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ced4da; /* Light border color */
+  border: 1px solid #ced4da;
   border-radius: 4px;
   margin-bottom: 10px;
 }
@@ -254,20 +293,20 @@ ul {
 ul li {
   margin-bottom: 15px;
   padding: 10px;
-  border: 1px solid #ced4da; /* Light border for list items */
-  border-radius: 4px; /* Rounded corners */
-  display: flex; /* Use flex for item layout */
-  justify-content: space-between; /* Space out title and buttons */
-  align-items: center; /* Center align vertically */
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 ul li strong {
-  flex-grow: 1; /* Allow title to grow and fill space */
-  color: #34495e; /* Darker color for the document title */
+  flex-grow: 1;
+  color: #34495e;
 }
 
 ul li button {
-  margin-left: 10px; /* Add a gap between the buttons */
+  margin-left: 10px;
 }
 
 .modal {
@@ -287,7 +326,7 @@ ul li button {
   padding: 20px;
   border-radius: 5px;
   width: 400px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for modal */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -296,9 +335,7 @@ ul li button {
   }
 
   button {
-    width: 100%; /* Full width buttons on small screens */
+    width: 100%;
   }
 }
 </style>
-
-
