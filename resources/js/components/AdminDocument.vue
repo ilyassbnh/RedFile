@@ -1,69 +1,85 @@
 <template>
-  <div class="admin-documents">
-    <h1>Admin - Document Management</h1>
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
-    <div class="document-actions">
-      <!-- Search -->
-      <input v-model="searchQuery" type="text" placeholder="Search documents..." @input="searchDocuments" />
+  </head>
+  <div class="container mx-auto p-8">
+    <!-- Page Title -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-semibold text-gray-800">Admin - Document Management</h1>
+      <button @click="openDocumentModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-600">Add New Document</button>
+    </div>
 
-      <!-- Sort by -->
-      <select v-model="sortOption" @change="sortDocuments">
+    <!-- Search and Sort -->
+    <div class="flex justify-between items-center mb-6">
+      <input v-model="searchQuery" type="text" placeholder="Search documents..." @input="searchDocuments" class="border border-gray-300 rounded-md py-2 px-4 w-1/2 focus:ring-2 focus:ring-indigo-600" />
+      
+      <select v-model="sortOption" @change="sortDocuments" class="border border-gray-300 rounded-md py-2 px-4 focus:ring-2 focus:ring-indigo-600">
         <option value="title">Sort by Title</option>
         <option value="category">Sort by Category</option>
       </select>
-
-      <button @click="openDocumentModal()">Add New Document</button>
     </div>
 
     <!-- Document List -->
     <div v-if="filteredDocuments.length">
-      <h2>Document List</h2>
-      <ul>
-        <li v-for="doc in filteredDocuments" :key="doc.id">
-          <strong>{{ doc.title }}</strong> - {{ doc.content }}
-          <br />
-          <em>Category: {{ getCategoryName(doc.category_id) }}</em>
-          <br />
-          <button @click="openDocumentModal(doc)">Edit</button>
-          <button @click="handleDeleteDocument(doc.id)">Delete</button>
-          <button @click="downloadDocument(doc)">Download</button>
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Document List</h2>
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <li v-for="doc in filteredDocuments" :key="doc.id" class="bg-white shadow-md rounded-lg p-4">
+          <strong class="block text-lg font-medium text-gray-900">{{ doc.title }}</strong>
+          <p class="text-gray-700">{{ doc.content }}</p>
+          <em class="text-sm text-gray-500 block mt-2">Category: {{ getCategoryName(doc.category_id) }}</em>
+
+          <div class="mt-4 flex space-x-2">
+            <button @click="openDocumentModal(doc)" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-400">Edit</button>
+            <button @click="handleDeleteDocument(doc.id)" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-400">Delete</button>
+            <button @click="downloadDocument(doc)" class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-400">Download</button>
+          </div>
         </li>
       </ul>
     </div>
+    <!-- No documents message -->
+    <div v-else class="text-gray-600">No documents found.</div>
 
     <!-- Document Modal -->
-    <div v-if="showDocumentModal" class="modal">
-      <div class="modal-content">
-        <h2>{{ editingDocument ? 'Edit Document' : 'Add New Document' }}</h2>
-        <form @submit.prevent="handleSaveDocument">
-          <div class="form-group">
-            <label for="title">Title:</label>
-            <input v-model="documentForm.title" type="text" id="title" required />
+    <div v-if="showDocumentModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">{{ editingDocument ? 'Edit Document' : 'Add New Document' }}</h2>
+        
+        <form @submit.prevent="handleSaveDocument" class="space-y-6">
+          <!-- Title -->
+          <div>
+            <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
+            <input v-model="documentForm.title" type="text" id="title" required class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-indigo-600 focus:border-indigo-600" />
           </div>
-          <div class="form-group">
-            <label for="content">Contents:</label>
-            <textarea v-model="documentForm.content" id="content" required></textarea>
+          <!-- Content -->
+          <div>
+            <label for="content" class="block text-sm font-medium text-gray-700">Contents:</label>
+            <textarea v-model="documentForm.content" id="content" rows="4" required class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-indigo-600 focus:border-indigo-600"></textarea>
           </div>
-          <div class="form-group">
-            <label for="category">Category:</label>
-            <select v-model="documentForm.category_id" required>
-              <option v-for="category in categories" :key="category.id" :value="category.id">
-                {{ category.name }}
-              </option>
+          <!-- Category -->
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700">Category:</label>
+            <select v-model="documentForm.category_id" id="category" required class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-indigo-600 focus:border-indigo-600">
+              <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
             </select>
           </div>
-          <div class="form-group">
-            <label for="file">Document File:</label>
-            <input type="file" @change="handleFileUpload" />
+          <!-- File Upload -->
+          <div>
+            <label for="file" class="block text-sm font-medium text-gray-700">Document File:</label>
+            <input type="file" id="file" @change="handleFileUpload" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-indigo-600 focus:border-indigo-600" />
           </div>
-          <button type="submit">{{ editingDocument ? 'Update' : 'Add' }} Document</button>
-          <button type="button" @click="closeDocumentModal">Cancel</button>
+          
+          <!-- Action Buttons -->
+          <div class="flex justify-end space-x-4">
+            <button type="button" @click="closeDocumentModal" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-400">Cancel</button>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500">{{ editingDocument ? 'Update' : 'Add' }} Document</button>
+          </div>
         </form>
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -73,8 +89,8 @@ export default {
     return {
       documents: [],
       categories: [],
-      searchQuery: '', // For search functionality
-      sortOption: 'title', // For sorting functionality
+      searchQuery: '',
+      sortOption: 'title',
       showDocumentModal: false,
       documentForm: {
         title: '',
@@ -88,12 +104,10 @@ export default {
   },
   computed: {
     filteredDocuments() {
-      // Filter documents based on search query
       let filtered = this.documents.filter(doc =>
         doc.title.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
 
-      // Sort documents based on the selected option
       if (this.sortOption === 'title') {
         return filtered.sort((a, b) => a.title.localeCompare(b.title));
       } else if (this.sortOption === 'category') {
@@ -171,7 +185,7 @@ export default {
             this.closeDocumentModal();
           })
           .catch(error => {
-            console.error('Error updating document:', error);
+            console.error('Error saving document:', error);
           });
       } else {
         axios
@@ -181,21 +195,33 @@ export default {
             this.closeDocumentModal();
           })
           .catch(error => {
-            console.error('Error adding document:', error);
+            console.error('Error saving document:', error);
           });
       }
     },
     handleDeleteDocument(id) {
-      if (confirm('Are you sure you want to delete this document?')) {
-        axios
-          .delete(`/api/Admin-documents/${id}`)
-          .then(() => {
-            this.fetchDocuments();
-          })
-          .catch(error => {
-            console.error('Error deleting document:', error);
-          });
-      }
+      axios
+        .delete(`/api/Admin-documents/${id}`)
+        .then(() => {
+          this.fetchDocuments();
+        })
+        .catch(error => {
+          console.error('Error deleting document:', error);
+        });
+    },
+    downloadDocument(document) {
+      axios({
+        url: `/api/Admin-documents/${document.id}/download`,
+        method: 'GET',
+        responseType: 'blob',
+      }).then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${document.title}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+      });
     },
     searchDocuments() {
       this.filteredDocuments;
@@ -203,139 +229,16 @@ export default {
     sortDocuments() {
       this.filteredDocuments;
     },
-    downloadDocument(doc) {
-      axios
-        .get(`/api/Admin-documents/download/${doc.id}`, {
-          responseType: 'blob',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
-        .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', `${doc.title}.pdf`); // Assuming PDF download
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch(error => {
-          console.error('Error downloading document:', error);
-        });
-    },
   },
   mounted() {
     this.fetchDocuments();
     this.fetchCategories();
   },
 };
-
 </script>
 
 <style scoped>
-.admin-documents {
-  font-family: 'Roboto', sans-serif;
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-h1,
-h2 {
-  color: #34495e;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 5px 0;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-  color: #2c3e50;
-}
-
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul li {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-ul li strong {
-  flex-grow: 1;
-  color: #34495e;
-}
-
-ul li button {
-  margin-left: 10px;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 400px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-@media (max-width: 768px) {
-  .admin-documents {
-    padding: 10px;
-  }
-
-  button {
-    width: 100%;
-  }
+.container {
+  max-width: 1200px;
 }
 </style>

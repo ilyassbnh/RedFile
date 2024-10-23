@@ -1,50 +1,73 @@
 <template>
+      <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  </head>
   <div class="admin-panel">
-    <h1>Admin Panel - User Management</h1>
+    <h1 class="text-2xl font-semibold text-center text-gray-900">Admin Panel - User Management</h1>
 
-    <form @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleSubmit" class="mt-8 space-y-6 bg-white p-6 rounded-lg shadow-md">
       <div>
-        <label>Name:</label>
-        <input v-model="form.name" type="text" required />
+        <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
+        <input v-model="form.name" type="text" required
+          class="mt-2 block w-full rounded-md border border-gray-300 py-1.5 px-3 text-gray-900 placeholder:text-gray-400 focus:border-indigo-600 focus:ring focus:ring-indigo-600"
+        />
       </div>
+      
       <div>
-        <label>Email:</label>
-        <input v-model="form.email" type="email" required />
+        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+        <input v-model="form.email" type="email" required
+          class="mt-2 block w-full rounded-md border border-gray-300 py-1.5 px-3 text-gray-900 placeholder:text-gray-400 focus:border-indigo-600 focus:ring focus:ring-indigo-600"
+        />
       </div>
-      <div v-if="!isEditing"> 
-        <label>Password:</label>
-        <input v-model="form.password" type="password" required />
-      </div>
+
       <div v-if="!isEditing">
-        <label>Confirm Password:</label>
-        <input v-model="form.password_confirmation" type="password" required />
+        <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+        <input v-model="form.password" type="password" required
+          class="mt-2 block w-full rounded-md border border-gray-300 py-1.5 px-3 text-gray-900 placeholder:text-gray-400 focus:border-indigo-600 focus:ring focus:ring-indigo-600"
+        />
       </div>
+
+      <div v-if="!isEditing">
+        <label for="password_confirmation" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
+        <input v-model="form.password_confirmation" type="password" required
+          class="mt-2 block w-full rounded-md border border-gray-300 py-1.5 px-3 text-gray-900 placeholder:text-gray-400 focus:border-indigo-600 focus:ring focus:ring-indigo-600"
+        />
+      </div>
+
       <div>
-        <label>Role:</label>
-        <select v-model="form.role" required>
+        <label for="role" class="block text-sm font-medium leading-6 text-gray-900">Role</label>
+        <select v-model="form.role" required
+          class="mt-2 block w-full rounded-md border border-gray-300 py-1.5 px-3 text-gray-900 placeholder:text-gray-400 focus:border-indigo-600 focus:ring focus:ring-indigo-600"
+        >
           <option v-for="role in roles" :key="role.id" :value="role.name">{{ role.name }}</option>
         </select>
       </div>
-      <button type="submit">{{ isEditing ? 'Update User' : 'Add User' }}</button>
+
+      <div class="flex justify-end">
+        <button type="submit" class="mt-4 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          {{ isEditing ? 'Update User' : 'Add User' }}
+        </button>
+      </div>
     </form>
 
-    <table>
+    <table class="mt-8 min-w-full divide-y divide-gray-200">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-900">Name</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-900">Email</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-900">Role</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-900">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="divide-y divide-gray-200">
         <tr v-for="user in users" :key="user.id">
-          <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.roles[0].name }}</td>
-          <td>
-            <button @click="editUser(user)">Edit</button>
-            <button @click="deleteUser(user.id)">Delete</button>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.name }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.email }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.roles[0].name }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <button @click="editUser(user)" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+            <button @click="deleteUser(user.id)" class="text-red-600 hover:text-red-900 ml-4">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -59,7 +82,7 @@ export default {
   data() {
     return {
       users: [],
-      roles: [], 
+      roles: [],
       form: {
         name: '',
         email: '',
@@ -106,7 +129,7 @@ export default {
           console.error('Error adding user:', error);
         });
     },
-    
+
     editUser(user) {
       this.isEditing = true;
       this.editingUserId = user.id;
@@ -162,98 +185,5 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  font-family: 'Roboto', sans-serif; 
-  background-color: #f8f9fa; 
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  color: #34495e; 
-}
-
-form {
-  margin-bottom: 20px;
-  padding: 20px;
-  background-color: #ffffff; 
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-form div {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #2c3e50; 
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ced4da; 
-  border-radius: 4px;
-  font-size: 16px; 
-}
-
-button {
-  background-color: #007bff; 
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px; 
-}
-
-button:hover {
-  background-color: #0056b3; 
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-table th,
-table td {
-  border: 1px solid #dee2e6; 
-  padding: 10px;
-  text-align: left;
-}
-
-table th {
-  background-color: #f1f1f1; 
-  font-weight: bold;
-}
-
-table tbody tr:hover {
-  background-color: #f8f9fa; 
-}
-
-table td button {
-  margin-right: 10px; 
-}
-
-@media (max-width: 768px) {
-  .admin-panel {
-    padding: 10px;
-  }
-
-  button {
-    width: 100%; 
-  }
-
-  table {
-    font-size: 14px; 
-  }
 }
 </style>

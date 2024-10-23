@@ -1,45 +1,109 @@
 <template>
-  <div class="admin-categories">
-    <h1>Admin - Category Management</h1>
+      <head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  </head>
+  <div class="max-w-2xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Admin - Category Management</h1>
 
-    <button @click="openAddCategoryModal">Add New Category</button>
+    <button 
+      @click="openAddCategoryModal" 
+      class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500 transition duration-300"
+    >
+      Add New Category
+    </button>
 
-    <div v-if="categories.length">
-      <h2>Category List</h2>
-      <ul>
-        <li v-for="category in categories" :key="category.id">
-          {{ category.name }}
-          <button @click="openEditCategoryModal(category)">Edit</button>
-          <button @click="handleDeleteCategory(category.id)">Delete</button>
+    <div v-if="categories.length" class="mt-6">
+      <h2 class="text-xl font-semibold text-gray-700 mb-2">Category List</h2>
+      <ul class="divide-y divide-gray-300">
+        <li 
+          v-for="category in categories" 
+          :key="category.id" 
+          class="flex justify-between items-center py-2 px-4 hover:bg-gray-200 transition duration-200"
+        >
+          <span class="text-gray-800">{{ category.name }}</span>
+          <div>
+            <button 
+              @click="openEditCategoryModal(category)" 
+              class="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-400 transition duration-300"
+            >
+              Edit
+            </button>
+            <button 
+              @click="handleDeleteCategory(category.id)" 
+              class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-400 transition duration-300 ml-2"
+            >
+              Delete
+            </button>
+          </div>
         </li>
       </ul>
     </div>
 
-    <div v-if="showAddCategoryModal" class="modal">
-      <div class="modal-content">
-        <h2>Add New Category</h2>
+    <!-- Add Category Modal -->
+    <div v-if="showAddCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div class="bg-white p-6 rounded shadow-md w-96">
+        <h2 class="text-xl font-semibold mb-4">Add New Category</h2>
         <form @submit.prevent="handleAddCategory">
-          <div class="form-group">
-            <label for="addCategoryName">Category Name:</label>
-            <input v-model="addCategoryForm.name" type="text" id="addCategoryName" required />
+          <div class="mb-4">
+            <label for="addCategoryName" class="block text-gray-700 font-medium mb-2">Category Name:</label>
+            <input 
+              v-model="addCategoryForm.name" 
+              type="text" 
+              id="addCategoryName" 
+              required 
+              class="border border-gray-300 rounded w-full px-3 py-2"
+            />
           </div>
-          <button type="submit">Add Category</button>
-          <button type="button" @click="closeAddCategoryModal">Cancel</button>
+          <div class="flex justify-between">
+            <button 
+              type="submit" 
+              class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500 transition duration-300"
+            >
+              Add Category
+            </button>
+            <button 
+              type="button" 
+              @click="closeAddCategoryModal" 
+              class="text-gray-700 py-2 px-4 rounded hover:bg-gray-200 transition duration-300"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>
 
     <!-- Edit Category Modal -->
-    <div v-if="showEditCategoryModal" class="modal">
-      <div class="modal-content">
-        <h2>Edit Category</h2>
+    <div v-if="showEditCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div class="bg-white p-6 rounded shadow-md w-96">
+        <h2 class="text-xl font-semibold mb-4">Edit Category</h2>
         <form @submit.prevent="handleEditCategory">
-          <div class="form-group">
-            <label for="editCategoryName">Category Name:</label>
-            <input v-model="editCategoryForm.name" type="text" id="editCategoryName" required />
+          <div class="mb-4">
+            <label for="editCategoryName" class="block text-gray-700 font-medium mb-2">Category Name:</label>
+            <input 
+              v-model="editCategoryForm.name" 
+              type="text" 
+              id="editCategoryName" 
+              required 
+              class="border border-gray-300 rounded w-full px-3 py-2"
+            />
           </div>
-          <button type="submit">Update Category</button>
-          <button type="button" @click="closeEditCategoryModal">Cancel</button>
+          <div class="flex justify-between">
+            <button 
+              type="submit" 
+              class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-500 transition duration-300"
+            >
+              Update Category
+            </button>
+            <button 
+              type="button" 
+              @click="closeEditCategoryModal" 
+              class="text-gray-700 py-2 px-4 rounded hover:bg-gray-200 transition duration-300"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -136,102 +200,5 @@ export default {
 </script>
 
 <style scoped>
-.admin-categories {
-  font-family: 'Roboto', sans-serif;
-  padding: 20px;
-  max-width: 800px; 
-  margin: 0 auto; 
-  background-color: #f8f9fa; 
-  border-radius: 8px; 
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-h1,
-h2 {
-  color: #34495e; 
-  margin-bottom: 15px;
-  text-align: center; 
-}
-
-button {
-  background-color: #007bff; 
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 5px 0; 
-}
-
-button:hover {
-  background-color: #0056b3; 
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-  color: #2c3e50; 
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ced4da; 
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul li {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ced4da; 
-  border-radius: 4px; 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-}
-
-ul li button {
-  margin-left: 10px; 
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 400px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
-}
-
-@media (max-width: 768px) {
-  .admin-categories {
-    padding: 10px;
-  }
-
-  button {
-    width: 100%;
-  }
-}
+/* You can add any additional styles here if needed */
 </style>
