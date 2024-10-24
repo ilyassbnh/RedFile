@@ -2,9 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-
+use Exception;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -46,5 +47,17 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+    public function render($request, Throwable $exception)
+    {
+        // Check if the exception is an UnauthorizedException
+        if ($exception instanceof UnauthorizedException) {
+            // Return a JSON response with the unauthorized message
+            return response()->json([
+                'message' => 'Unauthorized access. User does not have the right roles.'
+            ], 403); // 403 Forbidden
+        }
+
+        return parent::render($request, $exception);
     }
 }
