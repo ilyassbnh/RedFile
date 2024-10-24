@@ -37,14 +37,20 @@
       <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 transition duration-200">Upload</button>
     </form>
 
+    <!-- Search Document -->
+    <div class="search mb-4">
+      <label for="search" class="block text-gray-700 font-semibold mb-1">Search Documents:</label>
+      <input v-model="searchQuery" type="text" placeholder="Search by title..." class="border border-gray-300 rounded-md p-2 w-full" />
+    </div>
+
     <!-- List of User Documents -->
     <div class="documents-list">
       <h3 class="text-xl font-semibold mb-4">Your Documents</h3>
       <ul>
-        <li v-for="document in documents" :key="document.id" class="document-item mb-4">
+        <li v-for="document in filteredDocuments" :key="document.id" class="document-item mb-4">
           <div class="document-details p-4 bg-gray-100 rounded-md">
             <h4 class="font-semibold">{{ document.title }}</h4>
-            <p>{{ document.content }}</p>
+            <p>{{ document.contents }}</p> <!-- Changed to 'contents' based on your data structure -->
             <button @click="deleteDocument(document.id)" class="text-red-600 mt-2">Delete</button>
           </div>
         </li>
@@ -57,6 +63,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -72,8 +79,17 @@ export default {
       },
       categories: [],
       documents: [], // To store fetched user documents
+      searchQuery: '', // New property for search input
       successMessage: '', // For success messages
     };
+  },
+  computed: {
+    filteredDocuments() {
+      // Filter documents based on the search query
+      return this.documents.filter(document =>
+        document.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
   },
   methods: {
     handleFileUpload(event) {
@@ -165,6 +181,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .upload-container {
